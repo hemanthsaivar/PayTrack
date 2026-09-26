@@ -90,7 +90,6 @@ def create_payment(path, payload):
             ).fetchone()
         )
 
-
 def refund_payment(path, payment_id, amount):
     with connect(path) as db:
         row = db.execute('SELECT * FROM payments WHERE id=?', (payment_id,)).fetchone()
