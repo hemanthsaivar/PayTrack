@@ -93,6 +93,9 @@ def create_payment(path, payload):
 def refund_payment(path, payment_id, amount):
     with connect(path) as db:
         row = db.execute('SELECT * FROM payments WHERE id=?', (payment_id,)).fetchone()
+        remaining = row['amount_paise'] - row['refunded_paise']
+        if amount > remaining:
+            raise HTTPException(409, 'Refund exceeds remaining amount')
         if row is None:
             raise HTTPException(404, 'Payment not found')
         if row['status'] != 'success':
